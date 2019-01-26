@@ -1,0 +1,57 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class obstacles : MonoBehaviour {
+
+    public float speed;
+    public int damage;
+
+    //patrol
+
+
+    private float waitTime;
+    public float startWaitTime;
+    public Transform[] moveSpots;
+    private int randomSpot;
+
+    // Use this for initialization
+    void Start()
+    {
+        randomSpot = Random.Range(0, moveSpots.Length);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+        transform.position = Vector2.MoveTowards(transform.position, moveSpots[randomSpot].position, speed * Time.deltaTime);
+
+
+        if (Vector2.Distance(transform.position, moveSpots[randomSpot].position) < 0.2f)
+        {
+            if (waitTime <= 0)
+            {
+
+                //randomSpot = Random.Range(0, moveSpots.Length);
+                
+                waitTime = startWaitTime;
+            }
+            else
+            {
+                waitTime -= Time.deltaTime;
+            }
+
+        }
+    }
+
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        PlayerDamage player = collision.GetComponent<PlayerDamage>();
+        if (player != null)
+        {
+            player.TakeDamage(damage);
+        }
+
+    }
+}
